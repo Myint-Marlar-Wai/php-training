@@ -22,9 +22,6 @@
     <i>by <?php echo $row['author'] ?></i>,
     <b>$<?php echo $row['price'] ?></b>
     <p><?php echo $row['summary'] ?></p>
-    <a href="add-to-cart.php?id=<?php echo $id ?>" class="add-to-cart">
-     Add to Cart
-   </a>
  </div>
  <div class="footer">
    &copy; <?php echo date("Y") ?>. All right reserved.
