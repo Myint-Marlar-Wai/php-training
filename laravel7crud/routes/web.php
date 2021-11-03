@@ -24,3 +24,5 @@ Route::get('/students/{student}', 'StudentController@edit')->name('student.edit'
 Route::post('/students/{student}', 'StudentController@update')->name('student.update');
 Route::delete('/students/{student}', 'StudentController@destroy')->name('student.destroy');
 Route::post('/', 'StudentController@index')->name('student.index');
+Route::get('/contact', 'ContactController@index')->name('contact.index');
+Route::post('/contact', 'ContactController@contactSubmit')->name('contact.contactSubmit');
