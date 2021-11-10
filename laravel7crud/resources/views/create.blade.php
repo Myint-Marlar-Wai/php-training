@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layouts.app')
 @section('title', 'Create Student')
 @section('content')
 <style>
@@ -6,6 +6,7 @@
     margin-top: 40px;
   }
 </style>
+
 <div class="card uper">
   <div class="card-header">
     <h1><?php echo $name;?></h1>
@@ -20,11 +21,16 @@
         </ul>
       </div><br />
     @endif
-      <form method="post" action="{{ route('student.store') }}">
+      <form method="post" action="{{ route('student.store') }}" enctype="multipart/form-data">
+        @csrf
           <div class="form-group">
-              @csrf
               <label for="full_name">Full Name:</label>
               <input type="text" class="form-control" name="full_name"/>
+          </div>
+          <div class="form-group">
+            <label for="image">Choose Image:</label>
+            <input type="file" class="form-control" name="image" />
+            {{--<img id="previewImg" alt="Profile Image" style="max-width:130px;margin-top:20px;" />--}}
           </div>
           <div class="form-group">
               <label for="phone_no">Phone Nubmer:</label>
@@ -38,4 +44,16 @@
       </form>
   </div>
 </div>
+<script>
+  function previewFile(input) {
+    var file = $("input[type=file]").get(0).files[0];
+    if(file) {
+      var reader = new FileReader();
+      reader.onload = function() {
+        $("#previewImg").attr("src",reader.result);
+      }
+      reader.readAsDataURL(file);
+    }
+  }
+</script>
 @endsection

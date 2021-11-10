@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\student;
-
 use Illuminate\Http\Request;
+use App\Exports\StudentsExport;
+use App\Imports\StudentsImport;
+use Excel;
+
 
 class StudentController extends Controller
 {
@@ -16,7 +18,7 @@ class StudentController extends Controller
     public function index()
     {
 
-        $students = Student::all();
+        $students = Student::sortable()->paginate(6);
         //dd($students);
         return view('index', compact('students'),['name'=> 'Students List']);
  
@@ -43,26 +45,26 @@ class StudentController extends Controller
 
         $validatedData = $request->validate([
             'full_name' => 'required|max:255',
+            'image' => 'required',
             'phone_no' => 'required|numeric',
             'address' => 'required|max:255',
         ]);
+        if ($files = $request->file('image')) {
+            // Define upload path
+            $destinationPath = 'image/';
+            // Upload Orginal Image    
+            $profileImage = date('YmdHis') . "." . $files->getClientOriginalExtension();
+            $files->move($destinationPath, $profileImage);
+            $insert['image'] = "$profileImage";                   
+        }
+        // Save In Database
+
         $show = Student::create($validatedData);
 
         return redirect()->route('student.index')->with('success', 'Student has been added');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
+     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -88,6 +90,12 @@ class StudentController extends Controller
            'address' => $request->address,
            'created_at' => now(),
         ]);
+        if ($files = $request->file('image')) {
+            $destinationPath = 'public/image/'; // upload path
+            $profileImage = date('YmdHis') . "." . $files->getClientOriginalExtension();
+            $files->move($destinationPath, $profileImage);
+            $update['image'] = "$profileImage";
+            }
         return redirect()->route('student.index')->with('success', 'Student has been Updated');
 
     }
@@ -103,4 +111,35 @@ class StudentController extends Controller
         $student->delete();
         return redirect()->route('student.index')->with('success', 'Student has been Deleted');
     }
+
+    public function exportIntoExcel()
+    {
+        return Excel::download(new StudentsExport, 'students.xlsx');
+    }
+
+    public function exportIntoCsv()
+    {
+        return Excel::download(new StudentsExport, 'students.csv');
+    }
+
+    public function import(Request $request) 
+    {
+        Excel::import(new StudentsImport,request()->file('file'));
+           
+        return redirect('/students-list');
+    }
+
+    public function importForm()
+    {
+       return view('import-form');
+    }
+
+    public function search()
+    {
+        $search_text = $_GET['query'];
+        $students = Student::where("full_name","LIKE","%{$search_text}%")->orwhere("address","LIKE","%{$search_text}%")->paginate(5);
+
+        return view('/search',compact('students'));
+    }
+
 }

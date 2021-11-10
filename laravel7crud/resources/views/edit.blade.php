@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layouts.app')
 @section('title', 'Edit Student')
 @section('content')
 <style>
@@ -21,11 +21,19 @@
       </div><br />
     @endif
       <form method="post" action="{{ route('student.update', $student->id ) }}">
+        @csrf
           <div class="form-group">
-              @csrf
+              
               <label for="full_name">Full Name:</label>
               <input type="text" class="form-control" name="full_name" value="{{ $student->full_name }}"/>
           </div>
+          @if($student->image)
+<img id="original" src="{{ url('public/image/'.$student->image) }}" height="70" width="70">
+@endif
+<div class="form-group">
+  <label for="image">Choose Image:</label>
+  <input type="file" class="form-control" name="image" value="{{ $student->image }}"/>
+</div>
           <div class="form-group">
               <label for="phone_no">Phone Nubmer:</label>
               <input type="text" class="form-control" name="phone_no" value="{{ $student->phone_no }}"/>
