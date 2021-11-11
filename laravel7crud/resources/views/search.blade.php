@@ -48,7 +48,7 @@
         <tr>
             <td>{{$student->id}}</td>
             <td>{{$student->full_name}}</td>
-            <td><img id="original" src="{{ url('public/image/'.$student->image) }}" height="70" width="70"></td>
+            <td><img id="original" src="{{ url('image/'.$student->image) }}" height="70" width="70"></td>
             <td>{{$student->phone_no}}</td>
             <td>{{$student->address}}</td>
             <td><a href="" class="btn btn-primary">Edit</a></td>

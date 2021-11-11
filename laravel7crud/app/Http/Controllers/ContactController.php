@@ -36,7 +36,7 @@ class ContactController extends Controller
      */
     public function contactSubmit(Request $request)
     {
-        Mail::send('email.contactemail', [
+        Mail::send('email.contact_email', [
             'full_name' => $request->full_name,
             'email' => $request->email,
             'phone_no' => $request->phone_no,

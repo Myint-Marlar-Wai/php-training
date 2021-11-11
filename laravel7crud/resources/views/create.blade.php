@@ -29,8 +29,8 @@
           </div>
           <div class="form-group">
             <label for="image">Choose Image:</label>
-            <input type="file" class="form-control" name="image" />
-            {{--<img id="previewImg" alt="Profile Image" style="max-width:130px;margin-top:20px;" />--}}
+            <input type="file" class="form-control" name="image" onChange="previewFile()" />
+            <img id="previewImg" src="/image/demo.png" alt="Profile Image" style="max-width:130px;margin-top:20px;" />
           </div>
           <div class="form-group">
               <label for="phone_no">Phone Nubmer:</label>

@@ -14,10 +14,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 //Route::get('/', function () {
-//    return view('auth.register');
+//    return view('auth.login');
 //});
 
-Auth::routes();
+//Auth::routes();
+Route::get('/', 'StudentController@index')->name('student.index');
 Route::get('/students-list', 'StudentController@index')->name('student.index');
 Route::get('/students', 'StudentController@create')->name('student.create');
 Route::post('/students', 'StudentController@store')->name('student.store');
@@ -31,4 +32,3 @@ Route::get('/export-csv', 'StudentController@exportIntoCsv')->name('student.expo
 Route::post('import', 'StudentController@import')->name('import');
 Route::get('/import-form', 'StudentController@importForm');
 Route::get('/search', 'StudentController@search');
-

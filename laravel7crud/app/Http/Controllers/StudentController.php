@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Student;
 use Illuminate\Http\Request;
+use App\Http\Requests\FieldRequest;
+use App\Student;
 use App\Exports\StudentsExport;
 use App\Imports\StudentsImport;
 use Excel;
@@ -17,8 +18,8 @@ class StudentController extends Controller
      */
     public function index()
     {
-
-        $students = Student::sortable()->paginate(6);
+        $countPerPage = config('constants.paginate_per_page');
+        $students = Student::sortable()->paginate($countPerPage);
         //dd($students);
         return view('index', compact('students'),['name'=> 'Students List']);
  
@@ -40,25 +41,25 @@ class StudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(FieldRequest $request)
     {   
 
-        $validatedData = $request->validate([
-            'full_name' => 'required|max:255',
-            'image' => 'required',
-            'phone_no' => 'required|numeric',
-            'address' => 'required|max:255',
-        ]);
+        $validatedData = $request->validated();
+        Student::create($validatedData);
         
         if ($request->hasFile('image')) {
-            $file_name = date('YmdHis') . "." . $request->file('image')->Extension();
-            $request->file('image')->storeAs('imgupload',$file_name, 'public');    
-            $student = new Student();
-            $student->image =  $file_name;      
+            $profile = $request->file('image');
+            $path =('image/');
+            $file_name = time() . "." . $profile->getClientOriginalName();
+            $profile->move($path, $file_name);   
         }
-        // Save In Database
+            $student = new Student();
+            $student->full_name = $request->full_name;
+            $student->image =  $file_name;    
+            $student->phone_no = $request->phone_no;
+            $student->address = $request->address;
+            $student->save();
 
-        $show = Student::create($validatedData);
 
         return redirect()->route('student.index')->with('success', 'Student has been added');
     }
@@ -81,20 +82,34 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Student $student)
+    
+    public function update(Request $request,$id)
     {
-        $student->update([
-           'full_name' => $request->full_name,
-           'phone_no' => $request->phone_no,
-           'address' => $request->address,
-           'created_at' => now(),
+        $validatedData = $request->validate([
+            'full_name' => 'required|max:255',
+            'image' => 'required|image',
+            'phone_no' => 'required|numeric',
+            'address' => 'required|max:255',
         ]);
-        if ($files = $request->file('image')) {
-            $destinationPath = 'public/image/'; // upload path
-            $profileImage = date('YmdHis') . "." . $files->getClientOriginalExtension();
-            $files->move($destinationPath, $profileImage);
-            $update['image'] = "$profileImage";
-            }
+        
+        if ($request->hasfile('image')) {
+            $profile = $request->file('image');
+            $path =('image/');
+            $file_name = time() . "." . $profile->getClientOriginalName();
+            $profile->move($path, $file_name);   
+            $floderpath = $file_name; 
+               
+        } else {
+            $floderpath = require('oldphoto');
+        }
+
+            $student = Student::find($id);
+            $student->full_name = $request->full_name;
+            $student->image =  $floderpath;    
+            $student->phone_no = $request->phone_no;
+            $student->address = $request->address;
+            $student->save();
+
         return redirect()->route('student.index')->with('success', 'Student has been Updated');
 
     }
@@ -112,8 +127,9 @@ class StudentController extends Controller
     }
 
     public function exportIntoExcel()
-    {
-        return Excel::download(new StudentsExport, 'students.xlsx');
+    {   
+        $file_name = "students_" . date("m.d.y") . "_" . time() . ".xlsx";
+        return Excel::download(new StudentsExport, $file_name);
     }
 
     public function exportIntoCsv()

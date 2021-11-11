@@ -51,7 +51,7 @@
         <tr>
             <td>{{$student->id}}</td>
             <td>{{$student->full_name}}</td>
-            <td>{{ $student->image }}<img id="original" src="/image/{{ $student->image }}" height="70" width="70"></td>
+            <td><img id="original" src="/image/{{ $student->image }}" height="70" width="70"></td>
             <td>{{$student->phone_no}}</td>
             <td>{{$student->address}}</td>
             <td><a href="{{ route('student.edit', $student->id)}}" class="btn btn-primary">Edit</a></td>
