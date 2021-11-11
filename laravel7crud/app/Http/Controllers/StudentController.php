@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\student;
+use App\Student;
 use Illuminate\Http\Request;
 use App\Exports\StudentsExport;
 use App\Imports\StudentsImport;
@@ -49,13 +49,12 @@ class StudentController extends Controller
             'phone_no' => 'required|numeric',
             'address' => 'required|max:255',
         ]);
-        if ($files = $request->file('image')) {
-            // Define upload path
-            $destinationPath = 'image/';
-            // Upload Orginal Image    
-            $profileImage = date('YmdHis') . "." . $files->getClientOriginalExtension();
-            $files->move($destinationPath, $profileImage);
-            $insert['image'] = "$profileImage";                   
+        
+        if ($request->hasFile('image')) {
+            $file_name = date('YmdHis') . "." . $request->file('image')->Extension();
+            $request->file('image')->storeAs('imgupload',$file_name, 'public');    
+            $student = new Student();
+            $student->image =  $file_name;      
         }
         // Save In Database
 
