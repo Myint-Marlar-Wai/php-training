@@ -150,9 +150,10 @@ class StudentController extends Controller
     }
 
     public function search()
-    {
+    {   
+        $countPerPage = config('constants.paginate_per_page');
         $search_text = $_GET['query'];
-        $students = Student::where("full_name","LIKE","%{$search_text}%")->orwhere("address","LIKE","%{$search_text}%")->paginate(5);
+        $students = Student::where("full_name","LIKE","%{$search_text}%")->orwhere("address","LIKE","%{$search_text}%")->paginate($countPerPage);
 
         return view('/search',compact('students'));
     }

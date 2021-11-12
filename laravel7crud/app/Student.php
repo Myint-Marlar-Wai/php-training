@@ -8,11 +8,17 @@ use Illuminate\Support\Facades\DB;
 
 use Kyslik\ColumnSortable\Sortable;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Student extends Model
 {
     use Sortable;
 
+    use SoftDeletes;
+
     protected $table = "students";
+
+    protected $dates = ['deleted_at'];
 
     protected $fillable = [
         'full_name', 'image', 'phone_no', 'address'
