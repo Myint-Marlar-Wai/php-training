@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CreateStudentsTable extends Migration
 {
@@ -20,6 +21,7 @@ class CreateStudentsTable extends Migration
             $table->string('phone_no');
             $table->string('address');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

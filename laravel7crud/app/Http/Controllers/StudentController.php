@@ -20,7 +20,6 @@ class StudentController extends Controller
     {
         $countPerPage = config('constants.paginate_per_page');
         $students = Student::sortable()->paginate($countPerPage);
-        //dd($students);
         return view('index', compact('students'),['name'=> 'Students List']);
  
     }
@@ -45,7 +44,6 @@ class StudentController extends Controller
     {   
 
         $validatedData = $request->validated();
-        Student::create($validatedData);
         
         if ($request->hasFile('image')) {
             $profile = $request->file('image');

@@ -18,10 +18,8 @@ class Student extends Model
 
     protected $table = "students";
 
-    protected $dates = ['deleted_at'];
-
     protected $fillable = [
-        'full_name', 'image', 'phone_no', 'address'
+        'full_name', 'image', 'phone_no', 'address', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     public $sortable = [
